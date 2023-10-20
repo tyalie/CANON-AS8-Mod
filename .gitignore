@@ -1,0 +1,10 @@
+bootloader
+/modules
+tools
+/zephyr
+.west
+build
+venv
+
+# clangd specific things for e.g. clang-tidy
+.cache
