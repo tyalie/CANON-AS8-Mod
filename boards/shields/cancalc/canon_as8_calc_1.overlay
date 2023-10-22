@@ -6,6 +6,11 @@
 
 /{
   zephyr,user {
+    display = <&ch1115_display>;
+
+    real_display_offsets = <0>, <0>;  // x/y offset
+    real_display_dims = <128>, <55>;  // width/height
+
     keyboard-gpios =
       <&gpio0 18 GPIO_ACTIVE_HIGH>,  // K2 - Y4
       <&gpio0 7  GPIO_ACTIVE_HIGH>,  // K3 - D6
@@ -21,7 +26,25 @@
   };
 };
 
-/{
+&i2c0 {
+  clock-frequency = <I2C_BITRATE_FAST>;
+
+  ch1115_display: ch1115@3c {
+    //compatible = "solomon,ssd1306fb";
+    compatible = "sinowealth,sh1106";
+    reg = <0x3c>;
+    label = "SSD1306";
+    height = <64>;
+    width  = <128>;
+    segment-offset  = <0>;
+    page-offset     = <0>;
+    display-offset  = <0>;
+    multiplex-ratio = <63>;
+    prechargep      = <0xD1>;
+    segment-remap;
+    com-invdir;
+    com-sequential;
+  };
 };
 
 &uart0 {
