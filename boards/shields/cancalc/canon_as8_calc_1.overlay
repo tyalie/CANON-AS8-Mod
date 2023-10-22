@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
 /{
   zephyr,user {
     display = <&ch1115_display>;
@@ -11,6 +13,7 @@
     real_display_offsets = <0>, <0>;  // x/y offset
     real_display_dims = <128>, <55>;  // width/height
 
+    /*
     keyboard-gpios =
       <&gpio0 18 GPIO_ACTIVE_HIGH>,  // K2 - Y4
       <&gpio0 7  GPIO_ACTIVE_HIGH>,  // K3 - D6
@@ -23,17 +26,27 @@
       <&gpio1 7  GPIO_ACTIVE_HIGH>,  // P2 - CAMSCL
       <&gpio0 3  GPIO_ACTIVE_HIGH>,   // P1? - D2
       <&gpio0 4  GPIO_ACTIVE_HIGH>;   // K5? - D3
+    */
   };
+
+  keyboard: keyboard {
+    compatible = "gpio-kscan";
+
+    key_0: key_0 {
+      input-gpios = <&gpio0 7 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+      output-gpios = <&gpio0 10 GPIO_ACTIVE_LOW>;
+      zephyr,code = <INPUT_KEY_0>;
+    };
+  };
+
 };
 
 &i2c0 {
   clock-frequency = <I2C_BITRATE_FAST>;
 
   ch1115_display: ch1115@3c {
-    //compatible = "solomon,ssd1306fb";
     compatible = "sinowealth,sh1106";
     reg = <0x3c>;
-    label = "SSD1306";
     height = <64>;
     width  = <128>;
     segment-offset  = <0>;

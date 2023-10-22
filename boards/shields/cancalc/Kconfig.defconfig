@@ -3,4 +3,10 @@
 
 if SHIELD_CANON_AS8_CALC_1
 
+config INPUT
+  default y
+
+config INPUT_GPIO_KSCAN
+  default y
+
 endif # CANON_AS8_CALC_1

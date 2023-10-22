@@ -1,0 +1,49 @@
+# Copyright (c) 2023 Sophie Tyalie
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+  Zephyr Input GPIO kscan parent node
+
+  This defines a group of gpio pairs (input / output) which produce an input
+  event from a connected keyboard matrix. Each pair and their corresponding key
+  code are specified in a child-node.
+
+  for example
+
+  #include <zephyr/dt-bindings/input/input-event-codes.h>
+
+  / {
+      keyboard {
+          compatible = "gpio-kscan";
+
+          key_0 {
+              input-gpios = <&gpio0 13 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+              output-gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
+              zephyr,code = <INPUT_KEY_0>;
+          };
+      };
+  };
+
+
+compatible: "gpio-kscan"
+
+include: base.yaml
+
+#properties:
+#  # TODO
+
+child-binding:
+  description: GPIO kscan child node
+  properties:
+    input-gpios:
+      type: phandle-array
+      required: true
+      description: The input pin for this key
+    output-gpios:
+      type: phandle-array
+      required: true
+      description: The output pin for this key
+    zephyr,code:
+      type: int
+      required: true
+      description: keycode to emit

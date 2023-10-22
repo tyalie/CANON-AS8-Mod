@@ -1,0 +1,9 @@
+if INPUT
+
+menu "Input drivers"
+
+rsource "Kconfig.kscan"
+
+endmenu # Input Drivers
+
+endif # INPUT
