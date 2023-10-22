@@ -1,0 +1,6 @@
+# Copyright (c) 2023 Sophie Tyalie
+# SPDX-License-Identifier: Apache-2.0
+
+if SHIELD_CANON_AS8_CALC_1
+
+endif # CANON_AS8_CALC_1

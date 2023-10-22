@@ -1,0 +1,6 @@
+# Copyright (c) 2023 Sophie Tyalie
+# SPDX-License-Identifier: Apache-2.0
+
+config SHIELD_CANON_AS8_CALC_1
+  def_bool $(shields_list_contains,canon_as8_calc_1)
+  depends on BOARD_XIAO_ESP32S3

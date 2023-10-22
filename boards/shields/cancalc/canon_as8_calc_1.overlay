@@ -1,0 +1,30 @@
+/*
+ * Copyright 2023 Sophie Tyalie
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/{
+  zephyr,user {
+    keyboard-gpios =
+      <&gpio0 18 GPIO_ACTIVE_HIGH>,  // K2 - Y4
+      <&gpio0 7  GPIO_ACTIVE_HIGH>,  // K3 - D6
+      <&gpio0 1  GPIO_ACTIVE_HIGH>,   // K4 - D0
+      <&gpio0 2  GPIO_ACTIVE_HIGH>,   // K6 - D1
+      <&gpio0 10 GPIO_ACTIVE_HIGH>,  // A2 - XMCLK
+      <&gpio0 15 GPIO_ACTIVE_HIGH>,  // A3 - Y2
+      <&gpio0 13 GPIO_ACTIVE_HIGH>,  // A4 - PCLK
+      <&gpio1 16 GPIO_ACTIVE_HIGH>,  // A5 - Y9
+      <&gpio1 7  GPIO_ACTIVE_HIGH>,  // P2 - CAMSCL
+      <&gpio0 3  GPIO_ACTIVE_HIGH>,   // P1? - D2
+      <&gpio0 4  GPIO_ACTIVE_HIGH>;   // K5? - D3
+  };
+};
+
+/{
+};
+
+&uart0 {
+	status = "disabled";
+};
+
