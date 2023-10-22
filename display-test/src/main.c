@@ -16,6 +16,8 @@
 #include <zephyr/display/cfb.h>
 #include <hal/gpio_hal.h>
 
+#include <os/test.h>
+
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(main, CONFIG_APP_LOG_LEVEL);
 
@@ -80,7 +82,7 @@ int main(void)
       deltaY *= -1;
 
 
-    sprintf(text, "B: %lu", b/10);
+    sprintf(text, TEST_STRING "B: %lu", b/10);
 
     cfb_framebuffer_clear(dev, false);
     cfb_draw_text(dev, text, 0,0);
