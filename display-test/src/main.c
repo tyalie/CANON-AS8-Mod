@@ -3,70 +3,34 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include "gpio_reg.h"
-#include "zephyr/dt-bindings/gpio/gpio.h"
-#include "zephyr/sys/util.h"
 #include <stdio.h>
-#include <sys/_stdint.h>
-#include <zephyr/kernel.h>
-#include <zephyr/device.h>
-#include <zephyr/devicetree.h>
-#include <zephyr/drivers/gpio.h>
-#include <zephyr/drivers/display.h>
-#include <zephyr/display/cfb.h>
-#include <hal/gpio_hal.h>
 
-#include <os/test.h>
+#include <zephyr/display/cfb.h>
+#include <zephyr/input/input.h>
+
+#include <os/display.h>
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(main, CONFIG_APP_LOG_LEVEL);
 
-static const struct device *dev =
-  DEVICE_DT_GET(DT_PROP(DT_PATH(zephyr_user), display));
+static uint32_t button_hit = 0;
 
-static const uint8_t disp_dimension[2] = DT_PROP(DT_PATH(zephyr_user), real_display_dims);
-static const uint8_t disp_offset[2] = DT_PROP(DT_PATH(zephyr_user), real_display_offsets);
-
-
-void display_init()
+void key_callback(struct input_event *evt)
 {
-  if (!device_is_ready(dev)) {
-    LOG_ERR("display not ready");
-    return;
-  }
-
-  if (display_set_pixel_format(dev, PIXEL_FORMAT_MONO10)) {
-    LOG_ERR("Failed to set required pixel format");
-    return;
-  }
-
-  if (cfb_framebuffer_init(dev)) {
-    LOG_ERR("Framebuffer init failed!");
-    return;
-  }
-
-  cfb_framebuffer_clear(dev, true);
-
-  display_blanking_off(dev);
-
-  cfb_framebuffer_invert(dev);
+  if (evt->value)
+    button_hit++;
 }
+
+INPUT_CALLBACK_DEFINE(NULL, key_callback);
+
 
 int main(void)
 {
-  //k_sleep(K_SECONDS(2));
-
-  display_init();
-
   struct cfb_position start = {0,0}, end;
-  uint8_t width, height;
   size_t b = 0;
-  char text[10];
+  char text[30];
 
-  width = disp_dimension[0];
-  height = disp_dimension[1];
-
-  int8_t deltaX = 4, deltaY = 5;
+  int8_t deltaX = 1, deltaY = 1;
 
   while (1) {
     start.x += deltaX;
@@ -75,24 +39,24 @@ int main(void)
     end.x = start.x + 10;
     end.y = start.y + 10;
 
-    if ((start.x + deltaX) < 0 || (end.x + deltaX) >= width)
+    if ((start.x + deltaX) < 0 || (end.x + deltaX) >= DISPLAY_PROPS.width)
       deltaX *= -1;
 
-    if ((start.y + deltaY) < 0 || (end.y + deltaY) >= height)
+    if ((start.y + deltaY) < 0 || (end.y + deltaY) >= DISPLAY_PROPS.height)
       deltaY *= -1;
 
 
-    sprintf(text, TEST_STRING "B: %lu", b/10);
+    sprintf(text, "B[%u] | b[%d]", b/10, button_hit);
 
-    cfb_framebuffer_clear(dev, false);
-    cfb_draw_text(dev, text, 0,0);
-    cfb_draw_rect(dev, &start, &end);
-    cfb_framebuffer_finalize(dev);
+    cfb_framebuffer_clear(display_dev, false);
+    cfb_draw_text(display_dev, text, 0,0);
+    cfb_invert_area(display_dev, start.x, start.y, end.x-start.x, end.y-start.y);
+    cfb_framebuffer_finalize(display_dev);
 
     k_sleep(K_MSEC(10));
 
     if (b % 10)
-      display_set_contrast(dev, b/10);
+      display_set_contrast(display_dev, b/10);
     b = (b + 1) % (128 * 10);
   }
 
