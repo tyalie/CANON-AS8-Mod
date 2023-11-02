@@ -5,6 +5,15 @@
  */
 
 #include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <os/input/keycodes.h>
+
+#define KEY_DEF(symbol, INPUT_GPIO, OUTPUT_GPIO, CODE)                \
+    key_ ## symbol: key_ ## symbol {                                  \
+      input-gpios = < INPUT_GPIO (GPIO_PULL_UP | GPIO_ACTIVE_LOW) >;  \
+      output-gpios = < OUTPUT_GPIO GPIO_ACTIVE_LOW >;                 \
+      zephyr,code = < CODE >;                                         \
+    }
+
 
 /{
   zephyr,user {
@@ -12,31 +21,38 @@
 
     real_display_offsets = <0>, <0>;  // x/y offset
     real_display_dims = <128>, <55>;  // width/height
-
-    /*
-    keyboard-gpios =
-      <&gpio0 18 GPIO_ACTIVE_HIGH>,  // K2 - Y4
-      <&gpio0 7  GPIO_ACTIVE_HIGH>,  // K3 - D6
-      <&gpio0 1  GPIO_ACTIVE_HIGH>,   // K4 - D0
-      <&gpio0 2  GPIO_ACTIVE_HIGH>,   // K6 - D1
-      <&gpio0 10 GPIO_ACTIVE_HIGH>,  // A2 - XMCLK
-      <&gpio0 15 GPIO_ACTIVE_HIGH>,  // A3 - Y2
-      <&gpio0 13 GPIO_ACTIVE_HIGH>,  // A4 - PCLK
-      <&gpio1 16 GPIO_ACTIVE_HIGH>,  // A5 - Y9
-      <&gpio1 7  GPIO_ACTIVE_HIGH>,  // P2 - CAMSCL
-      <&gpio0 3  GPIO_ACTIVE_HIGH>,   // P1? - D2
-      <&gpio0 4  GPIO_ACTIVE_HIGH>;   // K5? - D3
-    */
   };
 
   keyboard: keyboard {
     compatible = "gpio-kscan";
 
-    key_0: key_0 {
-      input-gpios = <&gpio0 7 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
-      output-gpios = <&gpio0 10 GPIO_ACTIVE_LOW>;
-      zephyr,code = <INPUT_KEY_0>;
-    };
+    KEY_DEF(0, &gpio0 10, &gpio0 7, INPUT_KEY_0);
+    KEY_DEF(1, &gpio0 10, &gpio0 1, INPUT_KEY_1);
+    KEY_DEF(2, &gpio0 10, &gpio0 2, INPUT_KEY_2);
+    KEY_DEF(3, &gpio0 10, &gpio0 4, INPUT_KEY_3);
+    KEY_DEF(4, &gpio0 13, &gpio0 1, INPUT_KEY_4);
+    KEY_DEF(5, &gpio0 13, &gpio0 2, INPUT_KEY_5);
+    KEY_DEF(6, &gpio0 13, &gpio0 4, INPUT_KEY_6);
+    KEY_DEF(7, &gpio0 15, &gpio0 7, INPUT_KEY_7);
+    KEY_DEF(8, &gpio0 15, &gpio0 1, INPUT_KEY_8);
+    KEY_DEF(9, &gpio0 15, &gpio0 2, INPUT_KEY_9);
+
+    KEY_DEF(dot, &gpio0 13, &gpio0 18, INPUT_KEY_DOT);
+    KEY_DEF(eq, &gpio1 7, &gpio0 7, INPUT_KEY_CEQ);
+    KEY_DEF(plus, &gpio1 16, &gpio0 4, INPUT_KEY_CPLUS);
+    KEY_DEF(minus, &gpio0 15, &gpio0 4, INPUT_KEY_CMINUS);
+    KEY_DEF(times, &gpio1 7, &gpio0 4, INPUT_KEY_CMUL);
+    KEY_DEF(div, &gpio1 7, &gpio0 2, INPUT_KEY_CDIV);
+    KEY_DEF(sqrt, &gpio0 10, &gpio0 18, INPUT_KEY_CDIV);
+    KEY_DEF(pct, &gpio1 16, &gpio0 7, INPUT_KEY_CPCTPM);
+    KEY_DEF(ci, &gpio1 16, &gpio0 2, INPUT_KEY_CCI);
+    KEY_DEF(m_minus, &gpio1 16, &gpio0 1, INPUT_KEY_CMMINUS);
+    KEY_DEF(m_plus, &gpio1 7, &gpio0 1, INPUT_KEY_CMPLUS);
+    KEY_DEF(rm_cm, &gpio0 13, &gpio0 7, INPUT_KEY_CRMCM);
+
+    KEY_DEF(on, &gpio0 4, &gpio0 3, INPUT_KEY_CCON);
+
+#undef KEY_DEF
   };
 
 };
