@@ -8,6 +8,8 @@ manifest:
   remotes:
     - name: zephyrproject-rtos
       url-base: https://github.com/zephyrproject-rtos
+    - name: km
+      url-base: https://github.com/tyalie
 
   projects:
     - name: zephyr
@@ -20,3 +22,7 @@ manifest:
           - hal_espressif
           - mcuboot
           - mbedtls
+    - name: heatshrink
+      remote: km
+      revision: develop
+      path: modules/lib/heatshrink
