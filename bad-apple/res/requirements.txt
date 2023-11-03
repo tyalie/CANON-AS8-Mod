@@ -1,0 +1,5 @@
+lz4==4.3.2
+Pillow==10.0.1
+av==10.0.0
+imageio==2.31.6
+heatshrink2==0.12.0

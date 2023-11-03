@@ -1,0 +1,19 @@
+menu "Zephyr"
+source "Kconfig.zephyr"
+endmenu
+
+
+module = APP
+module-str = APP
+source "subsys/logging/Kconfig.template.log_config"
+
+config HEATSHRINK_WINDOW_SZ2
+	int "Heatshrink window size"
+	default 11  # from pytohn heatshrink2 module
+
+config HEATSHRINK_LOOKAHEAD_SZ2
+	int "Heatshrink lookahead size"
+	default 4  # from python heatshrink2 module
+
+config VIDEO_FILE_SIZE
+	int "File size in bytes"

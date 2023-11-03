@@ -1,0 +1,3 @@
+&storage_partition {
+	reg = < 0x250000 0x500000 >;
+};
