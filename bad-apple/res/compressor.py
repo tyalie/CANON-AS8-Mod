@@ -17,6 +17,7 @@ import lz4.frame
 import numpy as np
 from PIL import Image
 import imageio.v3 as iio
+import av
 import heatshrink2
 
 def dim_parser(v: str):
@@ -28,11 +29,33 @@ def get_parser():
     parser.add_argument("-d", "--dimensions", type=dim_parser, help="Output dimensions", required=True)
     parser.add_argument("-t", "--threshold", type=int, default=-1, help="Threshold value [0-255]")
     parser.add_argument("-o", "--output", help="output file name", required=True)
+    parser.add_argument("--aspect", action="store_true", help="Preserve aspect ratio by adding borders")
+    parser.add_argument("--debug", default=None, help="Debug video out (mp4)")
 
     return parser
 
-def convert_frame(frame, dimensions, threshold):
+def add_border(img, dimensions):
+    ratio = dimensions[0] / dimensions[1]
+
+    if ratio * img.height == img.width:
+        return img
+
+    dimensions = (img.width, int(img.width / ratio)) # add horizontal borders
+    if ratio * img.height > img.width:
+        # add vertical borders
+        dimensions = (int(ratio * img.height), img.height)
+
+    new_img = Image.new(img.mode, dimensions)
+    new_pos = (dimensions[0] // 2 - img.width//2, dimensions[1] // 2 - img.height//2)
+    new_img.paste(img, new_pos)
+    return new_img
+
+def convert_frame(frame, preserve_aspect, dimensions, threshold):
     img = Image.fromarray(frame)
+
+    if preserve_aspect:
+        img = add_border(img, dimensions)
+
     img = img.resize(dimensions)
 
     # using B/W without dithering
@@ -44,11 +67,11 @@ def convert_frame(frame, dimensions, threshold):
 
     return img
 
-def do_video_conversion(video_file, dimensions, threshold):
+def do_video_conversion(video_file, preserve_aspect, dimensions, threshold):
     """resize image and apply threshold"""
 
     for _, frame in enumerate(iio.imiter(video_file)):
-        yield convert_frame(frame, dimensions, threshold)
+        yield convert_frame(frame, preserve_aspect, dimensions, threshold)
 
 def video_to_stream(frames):
     raw_data = bytearray()
@@ -72,8 +95,15 @@ def apply_heatshrink(data):
 if __name__ == "__main__":
     args = get_parser().parse_args()
 
-    frame_iter = do_video_conversion(args.input, args.dimensions, args.threshold)
+    frame_iter = do_video_conversion(args.input, args.aspect, args.dimensions, args.threshold)
+
+    if args.debug is not None:
+        frame_iter = list(map(np.array, frame_iter))
+        new_frames = list(map(lambda i: i*255, frame_iter))
+        mpv_writer = iio.imwrite(args.debug, new_frames, codec="mpeg4", in_pixel_format="gray8")
+
     raw_data = video_to_stream(frame_iter)
+
 
     comp_method = None
     if args.output.endswith(".lz4"):

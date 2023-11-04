@@ -10,6 +10,7 @@ Convert videos using the description in the res folders README.
 ## Restrictions
 - b/w
 - compressed videos at most 0x500000 B (~5.1MB)
+- only 30fps rn for most real time video playback
 
 ## Upload video
 
