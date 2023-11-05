@@ -11,7 +11,7 @@
 #include <zephyr/device.h>
 
 static const struct device *display_dev =
-	DEVICE_DT_GET(DT_PROP(DT_PATH(zephyr_user), display));
+	DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
 
 union display_properties {
 	struct {

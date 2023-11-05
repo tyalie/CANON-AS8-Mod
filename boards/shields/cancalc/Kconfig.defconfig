@@ -4,12 +4,18 @@
 
 if SHIELD_CANON_AS8_CALC_1
 
+menu "Canon Calc shield settings"
+
 # input subsystem / key-scanning {{{
 config INPUT
   default y
 
 config INPUT_GPIO_KSCAN
   default y
+
+choice INPUT_MODE
+  default INPUT_MODE_THREAD
+endchoice
 # }}}
 # display {{{
 # communication
@@ -25,14 +31,80 @@ config SSD1306
 config SSD1306_DEFAULT_CONTRAST
   default 60  # set default brightness here
 
-# easy to use wrapper around display fb
+## UI frameworks {{{
+
+choice CALC_UI_FRAMEWORK
+  prompt "UI framework to use"
+  default CALC_UI_CHARACTER_FRAMEBUFFER
+
+config CALC_UI_CHARACTER_FRAMEBUFFER
+  bool "character framebuffer (cfb) for drawing to ui"
+
+config CALC_UI_LVGL
+  bool "Fully featured UI framework (lvgl)"
+
+config CALC_UI_NONE
+  bool "No UI framework"
+
+endchoice
+
+### character framebuffer {{{
 config CHARACTER_FRAMEBUFFER
+  default y if CALC_UI_CHARACTER_FRAMEBUFFER
+  default n
+### }}}
+### lvgl {{{
+config LVGL
+  default y if CALC_UI_LVGL
+  default n
+
+if LVGL
+
+config LV_CONF_MINIMAL
   default y
+config LV_MEM_CUSTOM
+  default y
+config LV_Z_MEM_POOL_SIZE
+  default 16384
+
+# oled monochrome display configuration
+choice LV_COLOR_DEPTH
+  default LV_COLOR_DEPTH_1
+endchoice
+config LV_Z_BITS_PER_PIXEL
+  default 1
+config LV_Z_VDB_SIZE
+  default 100
+
+config LV_USE_LOG
+  default y
+
+# theming
+config LV_USE_THEME_DEFAULT
+  default y
+config LV_THEME_DEFAULT_GROW
+  default n
+config LV_THEME_DEFAULT_DARK
+  default y
+config LV_USE_THEME_MONO
+  default y
+
+# components
+config LV_USE_LABEL
+  default y
+config LV_FONT_MONTSERRAT_8
+  default y
+
+endif
+# }}}
+# }}}
 # }}}
 # flash {{{
 # in order to be able to access 8mb flash programmatically
 config FLASH
   default y
 # }}}
+
+endmenu
 
 endif # CANON_AS8_CALC_1

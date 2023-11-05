@@ -16,9 +16,11 @@
 
 
 /{
-  zephyr,user {
-    display = <&ch1115_display>;
+  chosen {
+    zephyr,display = &ch1115_display;
+  };
 
+  zephyr,user {
     real_display_offsets = <0>, <0>;  // x/y offset
     real_display_dims = <128>, <55>;  // width/height
   };
