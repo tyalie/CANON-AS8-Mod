@@ -10,6 +10,10 @@
 #include <zephyr/devicetree.h>
 #include <zephyr/device.h>
 
+#ifdef CONFIG_LVGL
+#include <lvgl.h>
+#endif
+
 static const struct device *display_dev =
 	DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
 
@@ -31,3 +35,12 @@ const static union display_properties DISPLAY_PROPS = {.raw = {
 	DT_PROP(DT_PATH(zephyr_user), real_display_offsets)}
 };
 
+#ifdef CONFIG_LVGL
+/*
+ * Screen object
+ * Add elements into this to have elements aligned according
+ * to the visible screen
+ */
+lv_obj_t* get_screen();
+extern lv_obj_t* my_screen;
+#endif

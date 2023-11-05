@@ -15,6 +15,14 @@
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(as8_os, CONFIG_APP_LOG_LEVEL);
 
+#ifdef CONFIG_LVGL
+lv_obj_t* my_screen;
+
+lv_obj_t* get_screen() {
+	return my_screen;
+}
+#endif
+
 int os_display_init()
 {
 	if (!device_is_ready(display_dev)) {
@@ -44,7 +52,13 @@ int os_display_init()
 	cfb_framebuffer_invert(display_dev);
 #endif
 
+#ifdef CONFIG_LVGL
+	my_screen = lv_obj_create(lv_scr_act());
+	lv_obj_set_size(my_screen, DISPLAY_PROPS.width, DISPLAY_PROPS.height);
+	lv_obj_set_pos(my_screen, DISPLAY_PROPS.deltaX, DISPLAY_PROPS.deltaY);
+#endif
+
 	return 0;
 }
 
-SYS_INIT(os_display_init, APPLICATION, 20);
+SYS_INIT(os_display_init, APPLICATION, 99);
