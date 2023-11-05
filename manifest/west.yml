@@ -9,6 +9,8 @@ manifest:
     - name: zephyrproject-rtos
       url-base: https://github.com/zephyrproject-rtos
     - name: km
+      url-base: https://github.com/kickmaker
+    - name: tyalie
       url-base: https://github.com/tyalie
 
   projects:
@@ -24,5 +26,9 @@ manifest:
           - mbedtls
     - name: heatshrink
       remote: km
-      revision: develop
+      revision: zephyr
       path: modules/lib/heatshrink
+    - name: libast
+      remote: tyalie
+      revision: master
+      path: modules/lib/libast
