@@ -7,7 +7,10 @@
 
 #include <zephyr/device.h>
 #include <zephyr/drivers/display.h>
+
+#ifdef CONFIG_CHARACTER_FRAMEBUFFER
 #include <zephyr/display/cfb.h>
+#endif
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(as8_os, CONFIG_APP_LOG_LEVEL);
@@ -24,6 +27,7 @@ int os_display_init()
 		return -EAGAIN;
 	}
 
+#ifdef CONFIG_CHARACTER_FRAMEBUFFER
 	if (cfb_framebuffer_init(display_dev)) {
 		LOG_ERR("Framebuffer init failed!");
 		return -EAGAIN;
@@ -31,11 +35,14 @@ int os_display_init()
 
 
 	cfb_framebuffer_clear(display_dev, true);
+#endif
 
 	display_blanking_off(display_dev);
 
+#ifdef CONFIG_CHARACTER_FRAMEBUFFER
 	// because white and black is inverted
 	cfb_framebuffer_invert(display_dev);
+#endif
 
 	return 0;
 }
