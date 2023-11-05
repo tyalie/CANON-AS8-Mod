@@ -1,12 +1,38 @@
+# vim:fileencoding=utf-8:foldmethod=marker
 # Copyright (c) 2023 Sophie Tyalie
 # SPDX-License-Identifier: Apache-2.0
 
 if SHIELD_CANON_AS8_CALC_1
 
+# input subsystem / key-scanning {{{
 config INPUT
   default y
 
 config INPUT_GPIO_KSCAN
   default y
+# }}}
+# display {{{
+# communication
+config I2C
+  default y
+
+config DISPLAY
+  default y
+
+config SSD1306
+  default y
+
+config SSD1306_DEFAULT_CONTRAST
+  default 60  # set default brightness here
+
+# easy to use wrapper around display fb
+config CHARACTER_FRAMEBUFFER
+  default y
+# }}}
+# flash {{{
+# in order to be able to access 8mb flash programmatically
+config FLASH
+  default y
+# }}}
 
 endif # CANON_AS8_CALC_1
