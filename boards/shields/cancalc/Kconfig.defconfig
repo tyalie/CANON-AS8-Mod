@@ -105,6 +105,12 @@ config FLASH
   default y
 # }}}
 
+# other stuff {{{
+# otherwise we had to deal with very nasty stack overflows
+config LOG_PROCESS_THREAD_STACK_SIZE
+  default 2048
+# }}}
+
 endmenu
 
 endif # CANON_AS8_CALC_1
